@@ -8,7 +8,7 @@ config = require('./config'),
 exec = require('child_process').exec,
 
 ensureDir = function(dir, callback){
-  return exec("mkdir -p " + dir, function() {
+  return fs.mkdir(dir, '0777', function() {
     return callback();
   });
 };
@@ -41,7 +41,8 @@ var process = function process() {
       files.push(file);
     })
     .on('end', function() {
-
+      
+      fs.writeFileSync(Path.join(config.dest, 'index.html'), layout.replace('{{ content }}', 'Home page'), 'utf8');
       
       files.forEach(function(file) {
         console.log('Processing ', file.replace(Path.join(__dirname, config.src) + '/', ''), '...');
@@ -66,3 +67,9 @@ var process = function process() {
 };
 
 ensureDir(config.dest, process);
+
+
+connect.createServer()
+  .use(connect.static(Path.join(__dirname)))
+  .listen(4000);
+
