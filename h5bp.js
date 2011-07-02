@@ -2,20 +2,38 @@
 var Path = require('path'),
 fs = require('fs'),
 findit = require('findit'),
-ghm = require('github-flavored-markdown'),
+ ghm = require('github-flavored-markdown'),
+//ghm = require('./ghm'),
 connect = require('connect'),
 config = require('./config'),
+prettify = require('./prettify'),
 exec = require('child_process').exec,
 
-ensureDir = function(dir, callback){
+g_html_blocks = [],
+
+ensureDir = function ensureDir(dir, callback){
   return fs.mkdir(dir, '0777', function() {
     return callback();
   });
-};
+},
+
+codeHighlight = function codeHighlight(str) {
+  return str.replace(/<pre><code>[^<]+<\/code><\/pre>/g, function (code) {
+    code = code.match(/<code>([\s\S]+)<\/code>/)[1];
+    code = prettify.prettyPrintOne(code);
+    return "<pre><code>" + code + "</code></pre>";
+  });
+},
+
+toHtml = function toHtml(markdown) {
+  return codeHighlight(ghm.parse(markdown));
+//  return escapeWikiAnchors(ghm.parse(markdown));
+},
+
 
 
 // scan the whole directory
-var process = function process() {
+process = function process() {
   
   var files = [],
   
@@ -23,9 +41,6 @@ var process = function process() {
   
   layout;
   
-  // first grab layout content
-  
-//  fs.rmdirSync(config.dest);
   
   layout = fs.readFileSync(config.layout, 'utf8');
   
@@ -45,17 +60,15 @@ var process = function process() {
       fs.writeFileSync(Path.join(config.dest, 'index.html'), layout.replace('{{ content }}', 'Home page'), 'utf8');
       
       files.forEach(function(file) {
-        console.log('Processing ', file.replace(Path.join(__dirname, config.src) + '/', ''), '...');
         
         var filename = file.replace(Path.join(__dirname, config.src) + '/', ''),
         title = filename.replace(fileReg, ''),
-        output = ghm.parse(fs.readFileSync(file, 'utf8')),
-        dest = Path.join(__dirname, config.dest, title);
+        output = toHtml(fs.readFileSync(file, 'utf8')),
+        dest = Path.join(__dirname, config.dest, title === 'Home' ? '' : title);
         
         output = layout.replace('{{ content }}', output);
 
         ensureDir(dest, function() {
-          console.log('Writing to', Path.join(dest, 'index.html'));
           fs.writeFileSync(Path.join(dest, 'index.html'), output, 'utf8');
         });
         
@@ -69,7 +82,4 @@ var process = function process() {
 ensureDir(config.dest, process);
 
 
-connect.createServer()
-  .use(connect.static(Path.join(__dirname)))
-  .listen(4000);
 
