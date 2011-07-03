@@ -2,7 +2,7 @@
 
 // # h5bp documentation cli file
 
-// this file is the node program executed when one use the `h5bp-docs` commend line tool.
+// this file is the node program executed when one use the `h5bp-docs` command line tool.
 
 var Path = require('path'),
     fs = require('fs'),
