@@ -2,18 +2,21 @@
   "author": "Mickael Daniel",
   "name": "h5bp-docs",
   "description": "h5bp documentation generator",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "repository": {
     "url": ""
   },
-  "main": "h5bp",
+  "main": "./lib/h5bp.js",
+  "bin": "./bin/h5bp-cli.js",
   "engines": {
-    "node": "~v0.5.0-pre"
+    "node": "~0.4.9"
   },
   "dependencies": {
-    "findit": "",
-    "github-flavored-markdown": "",
-    "connect": ""
+    "findit": "0.1.0",
+    "github-flavored-markdown": "1.0.0",
+    "connect": "1.5.1",
+    "mustache": "0.3.1-dev",
+    "optimist": "0.2.5"
   },
   "devDependencies": {}
 }
