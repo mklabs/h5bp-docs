@@ -6,9 +6,6 @@ exports = module.exports = {
   // server port used if --server flag provided
   port: 4000,
   
-  // source folder in which markdown files are stored
-  src: "./wiki-test",
-  
   // destination folder, place where the generated files will land
   dest: "./dest",
   
@@ -17,6 +14,9 @@ exports = module.exports = {
   
   // allowed extensions, all other files are ignored 
   ext: ['md', 'markdown', 'mkd'],
+  
+  // baseurl, only used with --server flag. ex: docs
+  baseurl: '',
   
   // Enable verbose output (defaults false)
   verbose: false
