@@ -1,6 +1,6 @@
 ## h5bp documentation generator
 
-A static site generator writen in node. It's lyke Jehyll but somewhat simpler and more focused. takes a src folder, runs it through Markdown and generate for each markdown file (.md, .mkd, .markdown) a complete, static website.
+A static site generator writen in node. It's lyke Jehyll but somewhat simpler and more focused. takes a src folder, runs it through Markdown and generates for each markdown file (.md, .mkd, .markdown) a complete, static website.
 
 The main purpose of this tiny utility is to work nicely with github wikis (gollum). Running it through this program will generate a static website suitable for serving with Apache or any other web server.
 
