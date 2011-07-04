@@ -30,7 +30,7 @@ _example_
     mkdir test-docs
     cd test-docs
     git clone git://github.com/user/project.wiki.git wikis/project
-    h5bp-docs --src project.wiki/ --dest docs --verbose
+    h5bp-docs --src wiki/project --dest docs --verbose
     
 append --server flag to start a static server (using connect) that serves the generated files.
   
