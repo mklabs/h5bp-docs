@@ -94,6 +94,13 @@
 }
 *:hover > .octothorpe { opacity: 1; }
 
+.relative {position: relative;}
+.edit-page {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
 /* weirdness with codez */
 code > br:first-child {
   display: none;

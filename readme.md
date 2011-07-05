@@ -6,9 +6,9 @@ The main purpose of this tiny utility is to work nicely with github wikis (gollu
 
 ### Quick start
 
-  git clone thisrepo
-  cd repo
-  npm link
+    git://github.com/mklabs/h5bp-docs.git
+    cd h5bp-docs
+    npm link
   
 npm link will install dependencies defined in package.json and create a globally-installed symbolic link from package-name (h5bp-docs for now) to the current folder.
 
@@ -25,14 +25,14 @@ npm link will install dependencies defined in package.json and create a globally
       --layout          layout file used to generate each files, using {{{ content }}} placeholder
       -h, --help        You're staring at it
       
-_example_
+#### example
 
     mkdir test-docs
     cd test-docs
     git clone git://github.com/user/project.wiki.git wikis/project
-    h5bp-docs --src wiki/project --dest docs --verbose
+    h5bp-docs --src wikis/project --dest docs --verbose
     
-append --server flag to start a static server (using connect) that serves the generated files.
+append `--server` flag to start a static server that will host the generated directory. `--baseurl` allows you to change the location where you'd like to test things locally (localhost:4000/docs/ or localhost:4000/wikis/ for example)
   
 
 ### Configuration
@@ -40,8 +40,33 @@ append --server flag to start a static server (using connect) that serves the ge
 The following is a list of the currently supported configuration options. These can all be specified by creating a config.yml (now a bacic commonjs module) file in the site’s root directory. There are also flags for the h5bp executable which are described below next to their respective configuration options. The order of precedence for conflicting settings is:
 
 * Command-line flags
-* Configuration file settings (config.yml)
+* todo: Configuration file settings (config.yml)
 * Defaults (conf/config.js)
+
+```javascript
+{
+  // --server, when set to true, will start a connect static server once generation is done
+  server: false,
+  
+  // server port used if --server flag provided
+  port: 4000,
+  
+  // destination folder, place where pages are generated
+  dest: "./dest",
+  
+  // a single layout files with {{{ content }}} placeholder
+  layout: "./index.html",
+  
+  // allowed extensions, all other files are ignored 
+  ext: ['md', 'markdown', 'mkd'],
+  
+  // baseurl, only used with --server flag. ex: docs
+  baseurl: '',
+  
+  // Enable verbose output (defaults false)
+  verbose: false
+}
+```
     
 
 ### Dependencies
@@ -53,6 +78,8 @@ as defined in package.json
 * connect: 1.5.1,
 * mustache: 0.3.1-dev,
 * optimist: 0.2.5 
+
+syntax highlighting done thanks to [prettify](http://code.google.com/p/google-code-prettify/)
 
 
     

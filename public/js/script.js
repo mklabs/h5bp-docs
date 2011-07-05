@@ -18,7 +18,8 @@
     },
     
     url: function url() {
-      return '/' + this.get('path');
+      var path = this.get('path');
+      return (/^\//.test(path) ? '' : '/') + this.get('path');
     }
   });
   
@@ -124,14 +125,14 @@
       }
       
       model
-        .set({ path: path.substring(1) })
+        .set({ path: path })
         .fetch();
     }
   });
   
   $(function() {
     // TODO:DEBUG:REMOVE global exports
-    model = exports.model = new DocsPage({path: location.pathname.substring(1)});
+    model = exports.model = new DocsPage({path: location.pathname });
     view = exports.view = new DocsView({model: model});
     router = exports.router = new DocsRouter();
     
