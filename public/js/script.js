@@ -36,7 +36,7 @@
       _.bindAll(this, 'clickHandler', 'addHdrAttr', 'addPermalinks');
       
       this.placeholder = this.$('.wikiconvertor-content');
-      this.scroller = $('html,body');
+      this.scroller = this.options.scroll ? $('html,body') : undefined;
       this.active = this.$('.wikiconvertor-pages a[href="' + model.url() + '"]');
       this.active.closest('li').addClass('wikiconvertor-pages-active');
       
@@ -49,14 +49,19 @@
       external = /\/\//.test(url),
       octothorpe = /#/.test(url);
       
+      e.preventDefault();
+      
       if(!external && !octothorpe) {
          this.active.closest('li').removeClass('wikiconvertor-pages-active');
-         
-         
          this.active = target.closest('li').addClass('wikiconvertor-pages-active');
-         console.log('active', this.active);
+         
+         if(this.scroller) {
+           this.scroller.animate({scrollTop: 0}, 500);           
+         }
+
+         
+         
          router.navigate(url, true);
-         return false; 
        }
     },
     
@@ -133,7 +138,7 @@
   $(function() {
     // TODO:DEBUG:REMOVE global exports
     model = exports.model = new DocsPage({path: location.pathname });
-    view = exports.view = new DocsView({model: model});
+    view = exports.view = new DocsView({model: model, scroll: true});
     router = exports.router = new DocsRouter();
     
     Backbone.history.start({ pushState: true });
