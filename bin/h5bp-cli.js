@@ -8,20 +8,30 @@ var Path = require('path'),
     fs = require('fs'),
     util = require('util'),
     events = require('events'),
-    h5bp = require('../lib/h5bp');
+    h5bp = require('../lib/h5bp'),
+    defaults = require('../conf/config.js'),
+    optimist = require('optimist'),
+    options, argv;
     
 
 // There are also flags for the h5bp executable.
 // which are described below next to their respective configuration options. The order of precedence for 
 // conflicting settings is Command-line flags > Configuration file settings > Defaults
-var options = require('../conf/config.js'),
-argv = require('optimist').default(options).argv;
+argv = optimist.argv;
+
+options = optimist.argv.config ? 
+  require(Path.join(process.cwd(), optimist.argv.config)) : 
+  defaults;
+
+argv = optimist.default(options).argv;
+
 
 // basic help output when -h or --help used
 var help = [
     "usage: h5bp-docs [FILE, ...] [options]",
     "",
     "options:",
+    "  --config          Path to a local configuration files, used intead of h5bp-docs/conf/config.js as defaults",
     "  --verbose         Enable verbose output",
     "  --server          Start a static connect server once generation done",
     "  --src             Source folder where markdown files to process are stored",
