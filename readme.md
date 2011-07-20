@@ -83,8 +83,8 @@ The templates get the followings data to process:
 Mustache.to_html(layout, {
   baseurl: config.baseurl,
   title: file.title,
-  content: output, // file content
-  files: files // files array, with href and title props
+  content: output, //file content
+  files: files //files array, with href and title props
 });
 ```
 

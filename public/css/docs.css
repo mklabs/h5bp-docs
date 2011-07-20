@@ -50,7 +50,7 @@
 .wikistyle h2{font-size:150% !important;margin-top:1.5em !important;padding-top:.5em !important;}
 .wikistyle h3{margin-top:1em !important;}
 .wikistyle h1, .wikistyle h2, .wikistyle h3, .wikistyle h4,.wikistyle h5, .wikistyle h6 { text-align: left!important; margin-right: 0;!important; margin-left: 0;!important; width: 100%!important; position:relative;}  
-.wikistyle p{margin:1em 0 !important;line-height:1.5em !important;}
+.wikistyle p{margin:1em 0;line-height:1.5em !important;}
 .wikistyle a.absent{color:#a00;}
 .wikistyle ul,#wiki-form .content-body ul{margin:1em 0 1em 2em !important;}
 .wikistyle ol,#wiki-form .content-body ol{margin:1em 0 1em 2em !important;}
@@ -95,11 +95,8 @@
 *:hover > .octothorpe { opacity: 1; }
 
 .relative {position: relative;}
-.edit-page {
-  position: absolute;
-  right: 0;
-  top: 0;
-}
+#body .wikistyle p.dwn {margin: 0; border-bottom: none;}
+#body .wikistyle p.dwn span {float: right; font-size: 0.7em;}
 
 /* weirdness with codez */
 code > br:first-child {
@@ -142,9 +139,14 @@ li.L1,li.L3,li.L5,li.L7,li.L9{background:#eee}
 
 
 /* special care of mobile device. Make the wole slightly smaller and do not display left nav. */
-@media screen and (max-device-width:480px){
-  .wikiconvertor #body{width:95%;}
-  .wikiconvertor .wikiconvertor-pages{display:none;}
-  .wikiconvertor #header{font-size:0.5em;}
-  .wikiconvertor .wikiconvertor-content{padding-left:0;font-size:0.9em;}
+/* Mobile Landscape */
+@media only screen and (min-width: 480px) and (max-width: 767px) {
+  #header{font-size:0.5em;}
+}
+
+/* Mobile Portrait */
+@media only screen and (max-width: 480px) {
+  #container #header h2 {display: none;}
+  #body .wikiconvertor-pages {display: none;} /* todo: handle files list better than display: none */
+  #body .wikiconvertor-content {width: 100%; float: none;}
 }

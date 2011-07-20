@@ -16,6 +16,7 @@ exports = module.exports = {
   ext: ['md', 'markdown', 'mkd'],
   
   // baseurl, only used with --server flag. ex: docs
+  // also it helps to prefix links with some path
   baseurl: '',
   
   // Enable verbose output (defaults false)
