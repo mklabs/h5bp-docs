@@ -14,16 +14,19 @@ npm link will install dependencies defined in package.json and create a globally
 
 ### Usage
 
-    $ h5bp-docs [options]
+    usage: h5bp-docs [options]
 
     options:
+      --config          Path to a local configuration files, used intead of h5bp-docs/conf/config.js as defaults
       --verbose         Enable verbose output
       --server          Start a static connect server once generation done
       --src             Source folder where markdown files to process are stored
-      --assets          assets that get copied in the public folder of dest/
       --dest            Destination folder, place where the generated files will land
-      --layout          layout file used to generate each files, using {{{ content }}} placeholder
+      --layout          layout file used to generate each files, using {{ content }} placeholder
+      --baseurl         Let you define a prefixed value for each generated href
+      -v, --version     display package version
       -h, --help        You're staring at it
+
       
 #### example
 
@@ -37,10 +40,10 @@ append `--server` flag to start a static server that will host the generated dir
 
 ### Configuration
 
-The following is a list of the currently supported configuration options. These can all be specified by creating a config.yml (now a bacic commonjs module) file in the site’s root directory. There are also flags for the h5bp executable which are described below next to their respective configuration options. The order of precedence for conflicting settings is:
+The following is a list of the currently supported configuration options. These can all be specified by creating a config.js (a bacic commonjs module) file in the site’s root directory. There are also flags for the h5bp executable which are described below next to their respective configuration options. The order of precedence for conflicting settings is:
 
 * Command-line flags
-* todo: Configuration file settings (config.yml)
+* Local configuration file settings (`--config path/to/config.js`)
 * Defaults (conf/config.js)
 
 ```javascript
@@ -67,16 +70,35 @@ The following is a list of the currently supported configuration options. These 
   verbose: false
 }
 ```
+
+### editing files
+
+The program uses the default files in `public/` folder, you can either edit them directly or use the layout and assets options.
+
+* `layout`: path to a mustache template file.
+
+The templates get the followings data to process:
+
+```javascript
+Mustache.to_html(layout, {
+  baseurl: config.baseurl,
+  title: file.title,
+  content: output, // file content
+  files: files // files array, with href and title props
+});
+```
+
+* `assets`: the assets folder that gets copied to `/public/`.
     
 
 ### Dependencies
 
 as defined in package.json
 
-* findit:0.1.0,
-* github-flavored-markdown: 1.0.0,
-* connect: 1.5.1,
-* mustache: 0.3.1-dev,
+* findit:0.1.0
+* github-flavored-markdown: 1.0.0
+* connect: 1.5.1
+* mustache: 0.3.1-dev
 * optimist: 0.2.5 
 
 syntax highlighting done thanks to [prettify](http://code.google.com/p/google-code-prettify/)
