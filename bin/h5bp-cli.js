@@ -12,7 +12,7 @@ var Path = require('path'),
     defaults = require('../conf/config.js'),
     optimist = require('optimist'),
     options, argv;
-    
+
 
 // There are also flags for the h5bp executable.
 // which are described below next to their respective configuration options. The order of precedence for 
@@ -62,9 +62,9 @@ if(!argv.src) {
   process.exit(0);
 }
 
-// run the whole process and pass in computed configuration 
-// (merge between config.yaml, config.js (defaults) and flags 
+// run the whole process and pass in computed configuration
+// (merge between config.yaml, config.js (defaults) and flags
 // for the executable)
 delete argv._;
 delete argv.$0;
-h5bp(argv); 
+h5bp(argv);
