@@ -14,15 +14,17 @@ var Path = require('path'),
     options, argv;
 
 
-// There are also flags for the h5bp executable.
-// which are described below next to their respective configuration options. The order of precedence for 
-// conflicting settings is Command-line flags > Configuration file settings > Defaults
+// There are also flags for the h5bp executable.  which are described below
+// next to their respective configuration options. The order of precedence
+// for conflicting settings is:
+//    Command-line flags > Configuration file settings > Defaults
+//
 argv = optimist.argv;
 
 // set default options, if a --config option provided, this is a local relative path to some
 // other configuration file.
-options = optimist.argv.config ? 
-  require(Path.join(process.cwd(), optimist.argv.config)) : 
+options = optimist.argv.config ?
+  require(Path.join(process.cwd(), optimist.argv.config)) :
   defaults;
 
 // get command line options, merge with defaults
