@@ -52,7 +52,7 @@ Or layouts are used to change the template used during generation for each wiki 
 
         <!-- config
         {
-            layout: "index",
+            "layout": "index",
             ...
         }
         -->

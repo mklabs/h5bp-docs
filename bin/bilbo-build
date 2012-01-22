@@ -5,5 +5,6 @@ var grunt = require('grunt'),
 
 grunt.cli({
   tasks: [path.join(__dirname, '../lib/tasks')],
-  config: path.join(__dirname, '../grunt.js')
+  config: path.join(__dirname, '../grunt.js'),
+  base: process.cwd()
 });

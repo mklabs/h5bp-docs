@@ -65,4 +65,7 @@ if(!argv.src) {
 // for the executable)
 delete argv._;
 delete argv.$0;
-bilbo(argv);
+bilbo(argv, function(err) {
+  if(err) throw err;
+  console.log('All done.');
+});
