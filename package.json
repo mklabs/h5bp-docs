@@ -12,7 +12,6 @@
     "mustache": "~0.4.0",
     "github-flavored-markdown": "~1.0.0",
     "optimist": "~0.3.1",
-    "findit": "~0.1.2",
     "fileset": "~0.1.1"
   }
 }
