@@ -1,9 +1,9 @@
 {
-  "name": "h5bp-docs",
-  "description": "h5bp documentation generator",
+  "name": "bilbo",
+  "description": "github wiki -> static site generator",
   "version": "0.1.2",
-  "main": "./lib/h5bp.js",
-  "bin": "./bin/h5bp-cli.js",
+  "main": "./lib/bilbo.js",
+  "bin": "./bin/bilbo",
   "engines": {
     "node": "> 0.4"
   },

@@ -1,28 +1,26 @@
 #!/usr/bin/env node
 
-// # h5bp documentation cli file
-
-// this file is the node program executed when one use the `h5bp-docs` command line tool.
+// this file is the node program executed when one use the `bilbo` command line tool.
 
 var Path = require('path'),
     fs = require('fs'),
     util = require('util'),
     events = require('events'),
-    h5bp = require('../lib/h5bp'),
+    bilbo = require('../lib/bilbo'),
     defaults = require('../conf/config.js'),
     optimist = require('optimist'),
     options, argv;
 
 
-// There are also flags for the h5bp executable.
-// which are described below next to their respective configuration options. The order of precedence for 
+// There are also flags for the bilbo executable.
+// which are described below next to their respective configuration options. The order of precedence for
 // conflicting settings is Command-line flags > Configuration file settings > Defaults
 argv = optimist.argv;
 
 // set default options, if a --config option provided, this is a local relative path to some
 // other configuration file.
-options = optimist.argv.config ? 
-  require(Path.join(process.cwd(), optimist.argv.config)) : 
+options = optimist.argv.config ?
+  require(Path.join(process.cwd(), optimist.argv.config)) :
   defaults;
 
 // get command line options, merge with defaults
@@ -31,10 +29,10 @@ argv = optimist.default(options).argv;
 
 // basic help output when -h or --help used
 var help = [
-    "usage: h5bp-docs [options]",
+    "usage: bilbo [options]",
     "",
     "options:",
-    "  --config          Path to a local configuration files, used intead of h5bp-docs/conf/config.js as defaults",
+    "  --config          Path to a local configuration files, used intead of bilbo/conf/config.js as defaults",
     "  --verbose         Enable verbose output",
     "  --server          Start a static connect server once generation done",
     "  --src             Source folder where markdown files to process are stored",
@@ -67,4 +65,4 @@ if(!argv.src) {
 // for the executable)
 delete argv._;
 delete argv.$0;
-h5bp(argv);
+bilbo(argv);
