@@ -11,8 +11,8 @@ formerly named h5bp-docs. Have been refactored to use grunt as a build tool, eff
 ##### plan
 
 1. <del>Make it work on 0.6.x, and windows optionnaly.</del>
-2. Rename into bilbo.
-3. Setup grunt build skeletton.
+2. <del>Rename into bilbo.</del>
+3. <del>Setup grunt build skeletton.</del>
 4. Port the generation code to several grunt tasks.
 5. Rewrite the template logic, and implement the ability to specify different template per page.
 6. Implement the watch configuration, backport reload task in there.

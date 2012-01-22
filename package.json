@@ -3,7 +3,10 @@
   "description": "github wiki -> static site generator",
   "version": "0.1.2",
   "main": "./lib/bilbo.js",
-  "bin": "./bin/bilbo",
+  "bin": {
+    "bilbo": "./bin/bilbo",
+    "bilbo-build": "./bin/bilbo-build"
+  },
   "engines": {
     "node": "> 0.4"
   },
@@ -12,6 +15,7 @@
     "mustache": "~0.4.0",
     "github-flavored-markdown": "~1.0.0",
     "optimist": "~0.3.1",
-    "glob": "~3.0.1"
+    "glob": "~3.0.1",
+    "grunt": "~0.1.2"
   }
 }
