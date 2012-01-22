@@ -7,7 +7,7 @@ var Path = require('path'),
     util = require('util'),
     events = require('events'),
     bilbo = require('../lib/bilbo'),
-    defaults = require('../conf/config.js'),
+    defaults = require('../lib/conf/config.js'),
     optimist = require('optimist'),
     options, argv;
 
