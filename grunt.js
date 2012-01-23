@@ -8,8 +8,9 @@ config.init({
     layout: './index.html',
     ext: ['md', 'markdown', 'mkd'],
     template: 'default',
-    baseurl: '',
-    verbose: false
+    baseurl: '/dest',
+    verbose: false,
+    template: 'bootstrap'
   },
 
   generate: {

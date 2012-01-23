@@ -1,0 +1,60 @@
+<!doctype html>
+<!--[if lt IE 7 ]> <html lang="en-us" dir="ltr" class="no-js ie6"> <![endif]-->
+<!--[if IE 7 ]>    <html lang="en-us" dir="ltr" class="no-js ie7"> <![endif]-->
+<!--[if IE 8 ]>    <html lang="en-us" dir="ltr" class="no-js ie8"> <![endif]-->
+<!--[if IE 9 ]>    <html lang="en-us" dir="ltr" class="no-js ie9"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html lang="en-us" dir="ltr" class="no-js"> <!--<![endif]-->
+<head>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge;chrome=1" >
+  <meta charset="utf-8">
+
+  <!--
+    Templates get the following data to work with:
+
+      * baseurl -> config.baseurl
+      * title -> page title
+      * content -> page output (html markup)
+      * href -> the current url for the page
+      * edit -> the little edit this page snippet
+      * files -> array of files, should include every wiki page parsed and their hrefs
+        * path: unmodified filesystem path
+        * href: wiki page url
+        * filename: the page filename
+        * title: computed title from filename
+  -->
+
+  <title>{{ title }}</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="{{ baseurl }}/public/bootstrap.css" >
+  <style type="text/css">
+    body {
+      padding-top: 60px;
+    }
+  </style>
+
+</head>
+<body>
+
+  <div class="fluit-container sidebar-left">
+    <div class="content">
+      <div class="fluid-sidebar">
+        <div class="well">
+          <h5>Pages</h5>
+          <ul>
+            {{#files}}
+              <li><a href="{{ href }}">{{ title }}</a></li>
+            {{/files}}
+          </ul>
+        </div>
+      </div>
+
+
+      <div class="fluit-content">
+        {{{ content }}}
+      </div>
+    </div>
+  </div>
+</body>
+</html>
