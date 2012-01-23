@@ -7,10 +7,9 @@ config.init({
     dest: './dest',
     layout: './index.html',
     ext: ['md', 'markdown', 'mkd'],
-    template: 'default',
     baseurl: '/dest',
     verbose: false,
-    template: 'bootstrap'
+    template: 'default'
   },
 
   generate: {

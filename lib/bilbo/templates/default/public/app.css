@@ -1,0 +1,332 @@
+
+html, body.default {
+  color: #494949;
+  background-color: #F5F5F2;
+  font-size: 13px;
+}
+
+
+.default .mainframe {
+  width: 1239px;
+  margin: auto;
+}
+
+.default .elastic {
+  -webkit-transition: width 0.5s ease-out;
+     -moz-transition: width 0.5s ease-out;
+      -ms-transition: width 0.5s ease-out;
+       -o-transition: width 0.5s ease-out;
+          transition: width 0.5s ease-out;
+}
+
+.default .mainframe .nav {
+  width: 235px;
+  float: left;
+  color: rgba( 0, 0, 0, 0.65 );
+  margin-top: 52px;
+  line-height: 28px;
+  font-weight: normal;
+  position: fixed;
+  padding: 12px;
+  opacity: 1;
+  overflow: hidden;
+
+  -webkit-border-radius: 2px 0px 0px 2px;
+     -moz-border-radius: 2px 0px 0px 2px;
+          border-radius: 2px 0px 0px 2px;
+
+  -moz-background-clip: padding; -webkit-background-clip: padding-box; background-clip: padding-box;
+
+  -webkit-transition: all 0.35s ease-out;
+     -moz-transition: all 0.35s ease-out;
+      -ms-transition: all 0.35s ease-out;
+       -o-transition: all 0.35s ease-out;
+          transition: all 0.35s ease-out;
+}
+
+.default .mainframe .body {
+  margin-left: 236px;
+  margin-right: 34px;
+}
+
+.default .mainframe .body .statusbar {
+  height: 24px;
+  max-height: 34px;
+  overflow: hidden;
+  font-size: 11px;
+  line-height: 17px;
+  color: rgba( 0, 0, 0, 0.45 );
+  padding-right: 8px;
+  padding-top: 7px;
+  text-align: right;
+}
+
+
+.default .mainframe .body .statusbar a {
+  color: inherit;
+}
+
+
+.default .mainframe .nav ul li {
+  cursor: pointer;
+  font-size: 13px;
+  text-align: left;
+  text-transform: capitalize;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 140px;
+  overflow: hidden;
+  font-family: HelveticaNeue-Condensed, Ubuntu Condensed, sans-serif;
+  text-transform: uppercase;
+  font-weight: normal;
+}
+
+
+.default .mainframe .body .body-wrapper {
+  padding: 33px;
+  background: #FFFFFF;
+
+  -webkit-border-radius: 12px;
+     -moz-border-radius: 12px;
+          border-radius: 12px;
+
+
+  -moz-background-clip: padding; -webkit-background-clip: padding-box; background-clip: padding-box;
+
+
+
+}
+
+.default .mainframe .body .body-header {
+  margin-right: 34px;
+}
+
+
+.default .mainframe .body .body-header .searchbox {
+  float: right;
+  background-color: white;
+  width: 206px;
+  padding-left: 12px;
+  padding-right: 3px;
+  border: 1px solid #D4D4D4;
+  height: 22px;
+  overflow: hidden;
+  border-image: initial;
+
+
+  -webkit-border-radius: 11px;
+     -moz-border-radius: 11px;
+          border-radius: 11px;
+
+  -moz-background-clip: padding; -webkit-background-clip: padding-box; background-clip: padding-box;
+
+  -webkit-transition: all 0.5s ease-out;
+     -moz-transition: all 0.5s ease-out;
+      -ms-transition: all 0.5s ease-out;
+       -o-transition: all 0.5s ease-out;
+          transition: all 0.5s ease-out;
+
+}
+
+
+.default .mainframe .body .body-header .searchbox input {
+  border: 0px;
+  font-size: 12px;
+  height: 22px;
+  width: 181px;
+  padding-top: 2px;
+  outline-width: 0;
+  border-image: initial;
+  -webkit-transition: all 0.5s ease-out;
+     -moz-transition: all 0.5s ease-out;
+      -ms-transition: all 0.5s ease-out;
+       -o-transition: all 0.5s ease-out;
+          transition: all 0.5s ease-out;
+
+  -webkit-box-shadow: 0px 0px 0px #ffffff;
+     -moz-box-shadow: 0px 0px 0px #ffffff;
+          box-shadow: 0px 0px 0px #ffffff;
+
+}
+
+.default .mainframe .body .body-header .searchbox.active,
+.default .mainframe .body .body-header .searchbox.active input {
+  width: 321px;
+}
+
+.default .mainframe .body .body-header .hint {
+  display: block;
+  padding-left: 0px;
+  line-height: 17px;
+  color: #B0B0B0;
+  font-size: 12px;
+  font-weight: normal;
+  text-transform: none;
+  text-decoration: none;
+  font-family: HelveticaNeue-Light, Roboto-Condensed, sans-serif;
+}
+
+.default .mainframe .body .body-content {
+  float: left;
+  padding-right: 33px;
+  width: 615px;
+}
+
+.default .mainframe .body .body-side {
+  float: right;
+  margin-right: 34px;
+  width: 221px;
+}
+
+
+/** misc **/
+.default h1 a,
+.default .nav a,
+.default h1 a:visited,
+.default .nav a:visited {
+  color: inherit;
+  text-decoration: none;
+}
+
+.default a { color: #000080; }
+.default a:visited { color: #551a8b; }
+.default a:hover { color: #06e; }
+.default a:focus { outline: thin dotted; }
+
+/* Improve readability when focused and hovered in all browsers: h5bp.com/h */
+.default a:hover, .default a:active { outline: 0; }
+
+.default h1 {
+  color: #494949;
+  font-size: 24px;
+  line-height: 24px;
+  font-weight: bold;
+  text-transform: capitalize;
+}
+
+.default p {
+  font-size: 13px;
+  font-weight: normal;
+  line-height: 18px;
+  margin-bottom: 9px;
+}
+
+.default p small {
+  font-size: 11px;
+  color: #bfbfbf;
+}
+
+.default h1,
+.default h2,
+.default h3,
+.default h4,
+.default h5,
+.default h6 {
+  font-weight: bold;
+  color: #404040;
+}
+
+.default h1 small,
+.default h2 small,
+.default h3 small,
+.default h4 small,
+.default h5 small,
+.default h6 small {
+  color: #bfbfbf;
+}
+
+.default h1 {
+  margin-bottom: 18px;
+  font-size: 30px;
+  line-height: 36px;
+}
+
+.default h1 small {
+  font-size: 18px;
+}
+
+.default h2 {
+  font-size: 24px;
+  line-height: 36px;
+}
+
+.default h2 small {
+  font-size: 14px;
+}
+
+.default h3,
+.default h4,
+.default h5,
+.default h6 {
+  line-height: 36px;
+}
+
+.default h3 {
+  font-size: 18px;
+}
+
+.default h3 small {
+  font-size: 14px;
+}
+
+.default h4 {
+  font-size: 16px;
+}
+
+.default h4 small {
+  font-size: 12px;
+}
+
+.default h5 {
+  font-size: 14px;
+}
+
+.default h6 {
+  font-size: 13px;
+  color: #bfbfbf;
+  text-transform: uppercase;
+}
+
+.default blockquote {
+  padding-left: 15px;
+  margin-bottom: 18px;
+  border-left: 5px solid #eee;
+}
+
+.default code {
+  padding: 1px 3px;
+  white-space: nowrap;
+  border: 1px solid #ccc;
+  background-color: #f8f8f8;
+}
+
+.default pre {
+  display: block;
+  padding: 8.5px;
+  margin: 0 0 9px;
+  font-size: 12px;
+  line-height: 18px;
+  background-color: #f5f5f5;
+  border: 1px solid #ccc;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  white-space: pre;
+  white-space: pre-wrap;
+  word-break: break-all;
+  margin-bottom: 18px;
+}
+
+.default pre code {
+  padding: 0;
+  background-color: transparent;
+  border: none;
+}
+
+
+.default ::-moz-selection { background: #494949; color: #fff; text-shadow: none; }
+.default ::selection { background: #494949; color: #fff; text-shadow: none; }
+
+
+
