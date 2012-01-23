@@ -7,6 +7,7 @@ config.init({
     dest: './dest',
     layout: './index.html',
     ext: ['md', 'markdown', 'mkd'],
+    template: 'default',
     baseurl: '',
     verbose: false
   },
@@ -37,4 +38,4 @@ config.init({
 // task.registerTask('default', 'clean mkdirs compile generate copy build');
 
 // for now, it's just
-task.registerTask('default', 'clean generate build');
+task.registerTask('default', 'generate build');
