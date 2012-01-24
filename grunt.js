@@ -18,11 +18,30 @@ config.init({
 
   watch: {
     files: '**/*.md',
-    tasks: 'generate:site'
+    tasks: 'generate:site',
+
+    reload: {
+      files: '<config:watch.files>',
+      tasks: 'generate:site emit:reload'
+    }
   },
 
-  build: '<config:defaults>'
+  build: '<config:defaults>',
 
+  serve: {
+    output: {
+      port: 3001,
+      logs: 'default',
+      dirs: true
+    }
+  },
+
+  emit: {
+    reload: {
+      config: 'socket',
+      event: 'changed'
+    }
+  }
 });
 
 
@@ -39,3 +58,4 @@ config.init({
 
 // for now, it's just
 task.registerTask('default', 'generate build');
+task.registerTask('reload', 'generate build serve watch:reload');
