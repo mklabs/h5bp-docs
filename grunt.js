@@ -1,15 +1,12 @@
 config.init({
 
   defaults: {
-    server: false,
-    port: 4000,
-    source: './',
+    source: '**/*.md',
     dest: './dest',
-    layout: './index.html',
-    ext: ['md', 'markdown', 'mkd'],
     baseurl: '/dest',
     verbose: false,
-    template: 'default'
+    template: 'default',
+    repo: 'h5bp/html5-boilerplate'
   },
 
   generate: {
@@ -45,17 +42,13 @@ config.init({
 });
 
 
-// * clean: wipe out previous build dir.
-// * compile: compile templates and put them in config.
-// * generate: generates site's content from markdown file found in `source`.
-// * copy: copy assets from `templates` dir at the correct location in `output`.
-// * serve: spawn a local http server on top of the destination output dir.
-// * watch: watch for file changes in markdown files and static assets to retrigger the build.
-// * reload: works in combination with watch, inject a client-side socket.io script and automatically retrigger a page reload on file changes.
-// * build: trigger the build script on top of output/
 
 // task.registerTask('default', 'clean mkdirs compile generate copy build');
 
 // for now, it's just
 task.registerTask('default', 'generate build');
+
+// reload spawns a local http server with socket.io configured to reload
+// the current page. It works in tandem with the watch task which retrigger
+// the generation build whenever a file change occurs.
 task.registerTask('reload', 'generate build serve watch:reload');
