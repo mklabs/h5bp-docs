@@ -1,24 +1,2 @@
 #!/usr/bin/env node
-
-var grunt = require('grunt'),
-  path = require('path');
-
-// our default set of options
-var defaults = {
-  tasks: [path.join(__dirname, '../lib/tasks')],
-  config: path.join(__dirname, '../grunt.js'),
-  base: process.cwd()
-};
-
-// Use our own version of grunt.cli, needs a little bit more control on this
-// Parse task list and options from the command line.
-var cli = require('grunt/lib/grunt/cli');
-
-// CLI-parsed options override any passed-in "defaults" options.
-underscore.defaults(cli.options, defaults);
-
-// Plus to that cli-parsed options override, concat the tasks array.
-cli.options.tasks = cli.options.tasks.concat(defaults.tasks);
-
-// Run tasks.
-grunt.tasks(cli.tasks, cli.options);
+require('../lib/bilbo').cli();
