@@ -100,6 +100,8 @@ as defined in package.json
 * connect: 1.5.1
 * mustache: 0.3.1-dev
 * optimist: 0.2.5 
+* seq: 0.3.5 
+* wordwrap: 0.0.2 
 
 syntax highlighting done thanks to [prettify](http://code.google.com/p/google-code-prettify/)
 
