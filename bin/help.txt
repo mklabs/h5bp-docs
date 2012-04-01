@@ -1,0 +1,12 @@
+usage: h5bp-docs [options]
+
+options:
+  --config          Path to a local configuration files, used intead of h5bp-docs/conf/config.js as defaults
+  --verbose         Enable verbose output
+  --server          Start a static connect server once generation done
+  --src             Source folder where markdown files to process are stored
+  --dest            Destination folder, place where the generated files will land
+  --layout          layout file used to generate each files, using {{ content }} placeholder
+  --baseurl         Let you define a prefixed value for each generated href
+  -v, --version     display package version
+  -h, --help        You're staring at it

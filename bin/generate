@@ -1,0 +1,27 @@
+#!/usr/bin/env node
+
+var Generator = require('../');
+
+var site = new Generator;
+
+
+site.on('error', function(er) {
+  console.error('✗ Got error', er.message);
+  console.error(er.stack || er.message);
+  process.exit(er.code == null ? 1 : er.code);
+});
+
+var now = +new Date;
+site.on('end', function() {
+  console.log(' ✔ Site generated in ', ((+new Date - now) / 1000) + 's');
+});
+
+console.log(site.pages);
+
+var p = site.pages[0];
+
+console.log(p.render());
+
+// generate
+site.generate();
+

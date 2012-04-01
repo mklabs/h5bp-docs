@@ -1,0 +1,26 @@
+{
+  "author": "mklabs",
+  "name": "h5bp-docs",
+  "description": "Gollum wikis → Static site generator",
+  "version": "0.2.0",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/mklabs/h5bp-docs.git"
+  },
+  "main": "main.js",
+  "scripts": {
+    "test": "node test"
+  },
+  "engines": {
+    "node": "0.6.x"
+  },
+  "dependencies": {
+    "marked": "~0.2.3",
+    "glob": "~3.1.9",
+    "hogan": "~1.0.5-dev",
+    "mkdirp": "~0.3.1"
+  },
+  "devDependencies": {},
+  "bin": "bin/generate",
+  "lib": "./main"
+}
