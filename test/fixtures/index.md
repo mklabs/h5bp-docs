@@ -1,9 +1,9 @@
 
 # Home Page for tests
 
-[[Page]]
+[[page]]
 
-[[Page|Page Title]] Page.md
+[[Page Title|page]] Page.md
 
 [[Gollum Syntax]] - Gollum-Syntax.md
 

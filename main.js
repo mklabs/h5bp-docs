@@ -15,17 +15,18 @@ function Generator(o) {
   this.options = o;
   this.argv = o.argv;
 
+  o.layout = o.layout || o.template || path.join(__dirname, 'templates/default/index.html');
+  o.baseurl = o.baseurl || './';
+
   var cwd = this.cwd = o.cwd || process.cwd();
   this.dest = path.resolve(o.dest || o.destination || '_site');
 
   var files = this.files = this.find('**/*.md');
   this.pages = this.files.map(function(filepath) {
-    return new Page(filepath, {cwd: cwd, links: files, baseurl: './test/' });
+    return new Page(filepath, {cwd: cwd, links: files, baseurl: o.baseurl });
   });
 
-  var defaults = path.join(__dirname, 'templates/default/index.html');
-  this.layout = new Layout(o.layout || defaults, cwd);
-
+  this.layout = new Layout(o.layout, cwd);
   events.EventEmitter.call(this);
 }
 
@@ -33,31 +34,17 @@ util.inherits(Generator, events.EventEmitter);
 
 Generator.prototype.generate = function generate(cb) {
   cb = this.cb(cb);
-
   var layout = this.layout;
   this.pages.forEach(function(page) {
+    // sync, todo: -> async
     page.write('_site', { layout: layout });
   });
-
   cb();
 };
 
 Generator.prototype.find = function find(globs) {
   return glob.sync(globs, { matchBase: true, cwd: this.cwd });
 };
-
-
-Generator.prototype.ensureDir = function start() {};
-Generator.prototype.copyDir = function start() {};
-
-Generator.prototype.block = function block() {};
-Generator.prototype.anchors = function anchors() {};
-Generator.prototype.highlight = function highlight() {};
-
-Generator.prototype.toHtml = function toHtml() {};
-Generator.prototype.copy = function copy() {};
-
-Generator.prototype.layout = function layout() {};
 
 Generator.prototype.cb = function cb(ns, cb) {
   var self = this;
@@ -69,7 +56,6 @@ Generator.prototype.cb = function cb(ns, cb) {
 };
 
 
-
 // Page
 
 function Page(filepath, o) {
@@ -78,6 +64,7 @@ function Page(filepath, o) {
   this.cwd = o.cwd || process.cwd();
   this.links = o.links || [];
   this.baseurl = o.baseurl || './';
+  this.output = o.output || o.destination || o.dest || '_site';
 
   this.ext = path.extname(filepath);
   this.basename = path.basename(filepath);
@@ -97,12 +84,20 @@ Page.prototype.heading = function heading() {
 };
 
 Page.prototype.render = function render() {
-  return marked.toHtml(this.tokens, this.baseurl, this.links);
+  var cwd = this.cwd;
+    output = this.output;
+
+  var links = this.links.map(this.dest.bind(this)).map(function(absolute) {
+    return absolute.replace(path.join(cwd, output), '').replace(/^\//, '');
+  });
+  return marked.toHtml(this.tokens, this.baseurl, links);
 };
 
 Page.prototype.write = function write(base, o) {
+  if(!o) o = base, base = this.output;
+
   o = o || {};
-  var filepath = this.dest(base, this.name);
+  var filepath = this.dest(this.name);
   var content = this.render();
   if(o.layout) content = o.layout.render({
     title: this.title,
@@ -117,8 +112,9 @@ Page.prototype.write = function write(base, o) {
   return this;
 };
 
-Page.prototype.dest = function dest(base, name) {
-  base = path.resolve(this.cwd, base);
+Page.prototype.dest = function dest(name) {
+  var base = path.resolve(this.cwd, this.output, this.baseurl);
+  name = path.basename(name).replace(path.extname(name), '');
   name = /(index)|(home)/gi.test(name) ? 'index.html' : path.join(name, 'index.html');
   return path.join(base, name);
 };

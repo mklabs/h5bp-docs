@@ -1,9 +1,16 @@
 #!/usr/bin/env node
 
-var Generator = require('../');
+var Generator = require('../'),
+  nopt = require('nopt'),
+  path = require('path');
 
-var site = new Generator;
+// package.json / config.json
+var opts = config();
 
+// cli options
+opts = extend(opts, nopt());
+
+var site = new Generator(opts);
 
 site.on('error', function(er) {
   console.error('✗ Got error', er.message);
@@ -16,12 +23,30 @@ site.on('end', function() {
   console.log(' ✔ Site generated in ', ((+new Date - now) / 1000) + 's');
 });
 
-console.log(site.pages);
-
-var p = site.pages[0];
-
-console.log(p.render());
-
 // generate
 site.generate();
 
+
+function config(opts, base) {
+  base = base || process.cwd();
+  opts = opts || {};
+
+  var pkg = path.existsSync(path.join(base, 'package.json')),
+    config = path.existsSync(path.join(base, 'config.json'));
+
+  if(!pkg && !config) return opts;
+
+  // filepath to require
+  var filename = path.join(base, pkg ? 'package.json' : 'config.json');
+
+  // data to merge in passed in options
+  var data = require(filename);
+  return pkg ? data.config : data;
+}
+
+function extend(target, source) {
+  return Object.keys(source).reduce(function (a, key) {
+    a[key] = source[key];
+    return a;
+  }, target);
+}
