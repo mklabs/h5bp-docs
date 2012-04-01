@@ -67,6 +67,7 @@ function join() {
 
 function get(links, url) {
   url = path.basename(url) === 'index' ? url : join(url, 'index.html');
+  url = url.replace(/^\//, '');
   var link = links.filter(function(link) {
     return url === link;
   });

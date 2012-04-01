@@ -120,7 +120,7 @@ Page.prototype.write = function write(base, o) {
 };
 
 Page.prototype.dest = function dest(name) {
-  var base = path.resolve(this.cwd, this.output, this.baseurl);
+  var base = path.join(this.cwd, this.output, this.baseurl);
   name = path.basename(name).replace(path.extname(name), '');
   name = /(index)|(home)/gi.test(name) ? 'index.html' : path.join(name, 'index.html');
   return path.join(base, name);
