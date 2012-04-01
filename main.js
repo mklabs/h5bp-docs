@@ -15,15 +15,22 @@ function Generator(o) {
   this.options = o;
   this.argv = o.argv;
 
+  // defaults
   o.layout = o.layout || o.template || path.join(__dirname, 'templates/default/index.html');
   o.baseurl = o.baseurl || './';
+  o.dest = o.dest || o.destination || '_site';
+  o.cwd = o.cwd || process.cwd();
 
-  var cwd = this.cwd = o.cwd || process.cwd();
-  this.dest = path.resolve(o.dest || o.destination || '_site');
+  var cwd = this.cwd = path.resolve(o.cwd);
+  this.dest = path.resolve(o.dest);
 
   var files = this.files = this.find('**/*.md');
   this.pages = this.files.map(function(filepath) {
-    return new Page(filepath, {cwd: cwd, links: files, baseurl: o.baseurl });
+    return new Page(filepath, {
+      cwd: cwd,
+      links: files,
+      baseurl: o.baseurl
+    });
   });
 
   this.layout = new Layout(o.layout, cwd);

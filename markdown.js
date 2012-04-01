@@ -50,7 +50,7 @@ marked.gollum = function gollum(text, baseurl, links) {
 
   text = text.replace(rSingle, function(wholeMatch, m1) {
     if(rExt.test(m1)) return m1;
-    var url = join(baseurl, m1.split(' ').join('-')),
+    var url = join(baseurl, m1.split(/(\s)|(\/)/g).join('-')),
       link = get(links, url);
 
     if(!link) console.error('Unable to find page with url', url);

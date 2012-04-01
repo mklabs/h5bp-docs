@@ -1,17 +1,36 @@
 #!/usr/bin/env node
 
-var Generator = require('../'),
+var fs = require('fs'),
   nopt = require('nopt'),
   path = require('path');
+
+var Generator = require('../');
 
 // package.json / config.json
 var opts = config();
 
 // cli options
-opts = extend(opts, nopt());
+var known = {
+  dest        : String,
+  template    : String,
+  baseurl     : String,
+  version     : Boolean,
+  help        : Boolean
+};
+
+var shorthands = {
+  v: ['--version'],
+  t: ['--template'],
+  b: ['--baseurl'],
+  d: ['--destination']
+};
+
+opts = extend(opts, nopt(known, shorthands));
+
+if(opts.help) return fs.createReadStream(path.join(__dirname, 'help.txt')).pipe(process.stdout);
+if(opts.version) return console.log(require(path.join(__dirname, '../package.json')).version);
 
 var site = new Generator(opts);
-
 site.on('error', function(er) {
   console.error('✗ Got error', er.message);
   console.error(er.stack || er.message);
@@ -25,7 +44,6 @@ site.on('end', function() {
 
 // generate
 site.generate();
-
 
 function config(opts, base) {
   base = base || process.cwd();
@@ -41,7 +59,7 @@ function config(opts, base) {
 
   // data to merge in passed in options
   var data = require(filename);
-  return pkg ? data.config : data;
+  return pkg ? (data.config || {}) : data;
 }
 
 function extend(target, source) {
