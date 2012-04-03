@@ -48,14 +48,13 @@ site.on('end', function() {
 // generate
 site.generate();
 
-function config(opts, base) {
+function config(base) {
   base = base || process.cwd();
-  opts = opts || {};
 
   var pkg = path.existsSync(path.join(base, 'package.json')),
     config = path.existsSync(path.join(base, 'config.json'));
 
-  if(!pkg && !config) return opts;
+  if(!pkg && !config) return {};
 
   // filepath to require
   var filename = path.join(base, pkg ? 'package.json' : 'config.json');

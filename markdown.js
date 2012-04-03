@@ -45,7 +45,7 @@ marked.gollum = function gollum(text, baseurl, links) {
       link = get(links, url);
 
     if(!link) console.error('Unable to find page with url', url);
-    return "["+m1+"](" + url + "/)";
+    return "["+m1+"](../" + path.basename(url) + "/)";
   });
 
   text = text.replace(rSingle, function(wholeMatch, m1) {
@@ -54,7 +54,7 @@ marked.gollum = function gollum(text, baseurl, links) {
       link = get(links, url);
 
     if(!link) console.error('Unable to find page with url', url);
-    return "["+m1+"](" + url + "/)";
+    return "["+m1+"](../" + path.basename(url) + "/)";
   });
   return text;
 };
