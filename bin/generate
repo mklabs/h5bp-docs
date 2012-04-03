@@ -11,6 +11,7 @@ var opts = config();
 
 // cli options
 var known = {
+  src         : String,
   dest        : String,
   template    : String,
   baseurl     : String,
@@ -22,7 +23,9 @@ var shorthands = {
   v: ['--version'],
   t: ['--template'],
   b: ['--baseurl'],
-  d: ['--destination']
+  d: ['--destination'],
+  s: ['--source'],
+  src: ['--source']
 };
 
 opts = extend(opts, nopt(known, shorthands));

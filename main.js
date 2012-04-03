@@ -20,8 +20,9 @@ function Generator(o) {
   o.baseurl = o.baseurl || './';
   o.dest = o.dest || o.destination || '_site';
   o.cwd = o.cwd || process.cwd();
+  o.source = o.src || o.source || '';
 
-  var cwd = this.cwd = path.resolve(o.cwd);
+  var cwd = this.cwd = path.resolve(o.cwd, o.source);
   this.dest = path.resolve(o.dest);
 
   var files = this.files = this.find('**/*.md');
