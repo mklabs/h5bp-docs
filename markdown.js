@@ -15,7 +15,11 @@ marked.toHtml = function toHtml(tokens, baseurl, links) {
   // highlight code blocks
   tokens = marked.highlight(tokens);
 
-  return marked.parser(tokens);
+  // create a new array from tokens as marked seems to "consume" these.
+  // and its a reference to page.tokens we need to keep around.
+  var t = tokens.slice(0);
+  t.links = tokens.links;
+  return marked.parser(t);
 };
 
 marked.anchors = function anchors(tokens, baseurl, links) {
