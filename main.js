@@ -3,6 +3,7 @@ var fs = require('fs'),
   path = require('path'),
   util = require('util'),
   glob = require('glob'),
+  nopt = require('nopt'),
   events = require('events'),
   marked = require('./markdown'),
   mkdirp = require('mkdirp'),
@@ -10,6 +11,9 @@ var fs = require('fs'),
   hogan = require('hogan');
 
 module.exports = Generator;
+Generator.Page = Page;
+Generator.Layout = Layout;
+Generator.nopt = nopt;
 
 function Generator(o) {
   o = o || {};
@@ -23,19 +27,24 @@ function Generator(o) {
   o.dest = o.dest || o.destination || '_site';
   o.cwd = o.cwd || process.cwd();
   o.source = o.src || o.source || '';
+  // optional files filter
+  o.filter = o.filter ? new RegExp(o.filter, 'i') : null;
   // assets to copy from source dir, css, js, png, gif, etc.
-  o.assets = o.assets ? o.assets.split(' ') : ['.css', '.js', '.png', '.gif'];
+  o.assets = o.assets || ['**/*.css', '**/*.js', '**/*.png', '**/*.gif']
+  // files to generate
+  o.files = o.files || '**/*.md';
 
   var cwd = this.cwd = path.resolve(o.cwd, o.source);
   this.dest = path.resolve(o.dest);
 
-  var files = this.files = this.find('**/*.md');
+  var files = this.files = this.find(o.files);
   this.pages = this.files.map(function(filepath) {
     return new Page(filepath, {
       site: site,
       cwd: cwd,
       links: files,
-      baseurl: o.baseurl
+      baseurl: o.baseurl,
+      dest: o.dest
     });
   });
 
@@ -47,15 +56,30 @@ util.inherits(Generator, events.EventEmitter);
 
 Generator.prototype.generate = function generate(cb) {
   cb = this.cb(cb);
-  var self = this;
+  var self = this,
+    filter = this.options.filter;
+
+  // clean the previous build dirs
   this.clean();
 
-  var assets = this.find('**/*').filter(function(file) {
-    var ext = path.extname(file);
-    return !!~self.options.assets.indexOf(ext);
+  // find the asssets to copy
+  var assets = this.find(this.options.assets);
+
+  // compute the content of each page from markdown, without layout
+  // (but don't write to disk yet)
+  this.pages.forEach(function(page) {
+    // sync, todo: -> async
+    page.render();
   });
 
-  this.pages.forEach(function(page) {
+  // filter to a subset of pages, if --filter was provided
+  var pages = this.pages.filter(function(p) {
+    if(!filter) return true;
+    return filter.test(p.title) || filter.test(p.name);
+  });
+
+  // render each pages with layout and write to disk
+  pages.forEach(function(page) {
     // sync, todo: -> async
     page.render({ layout: self.layout }).write();
   });
@@ -89,7 +113,17 @@ Generator.prototype.copy = function copy(files, cb) {
 };
 
 Generator.prototype.find = function find(globs) {
-  return glob.sync(globs, { matchBase: true, cwd: this.cwd });
+  var filter = /^_/;
+  globs = Array.isArray(globs) ? globs : globs.split(' ');
+  return globs.map(function(pattern) {
+    // todo consider dealing with _sidebar / _footer
+    return glob.sync(pattern, { matchBase: true, cwd: this.cwd }).filter(function(file) {
+      return !filter.test(file) && !filter.test(path.basename(file));
+    });
+  }).reduce(function(a, b) {
+    // should unique this
+    return a.concat(b);
+  }, []);
 };
 
 Generator.prototype.cb = function cb(ns, cb) {
@@ -98,6 +132,13 @@ Generator.prototype.cb = function cb(ns, cb) {
     if(er) return self.emit('error', er);
     var args = Array.prototype.slice.call(this);
     self.emit('end', null, [ns].concat(args));
+  };
+};
+
+Generator.prototype.toJSON = function toJSON(cb) {
+  return {
+    pages: this.pages.map(function(p) { return p.toJSON(true); }),
+    options: this.options
   };
 };
 
@@ -170,7 +211,7 @@ Page.prototype.href = function href(from, to) {
   return path.join(fromHome ? '.' : '..', toHome ? '/' : this.name + '/').replace(/\\/g, '/');
 };
 
-Page.prototype.toJSON = function toJSON() {
+Page.prototype.toJSON = function toJSON(prevent) {
   var self = this;
   var links = this.links.map(function(l) {
     var page = self.site.pages.filter(function(p) {
@@ -184,10 +225,12 @@ Page.prototype.toJSON = function toJSON() {
   });
 
   return {
-    title: this.tille,
+    title: this.title,
+    slug: this.title.replace(/[^\w\d]+/g, '-'),
     content: this.content,
     files: links,
-    baseurl: this.baseurl
+    baseurl: this.baseurl,
+    site: prevent ? {} : this.site.toJSON()
   };
 };
 
@@ -211,6 +254,7 @@ Layout.prototype.render = function render(data, locals) {
   var body = this.template.render(data, locals);
 
   var dest = path.dirname(locals.page.dest());
+
   // handle relative assets
   body = body.replace(/<link rel=["']?stylesheet["']?\shref=['"](.+)["']\s*>/gm, function(match, src) {
     if(src.match(/\/\//)) return match;

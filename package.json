@@ -22,7 +22,8 @@
     "mkdirp": "~0.3.1",
     "highlight.js": "~1.1.1",
     "nopt": "~1.0.10",
-    "rimraf": "~2.0.1"
+    "rimraf": "~2.0.1",
+    "mime": "~1.2.5"
   },
   "devDependencies": {},
   "bin": "bin/generate",

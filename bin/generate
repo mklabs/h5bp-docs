@@ -15,6 +15,9 @@ var known = {
   dest        : String,
   template    : String,
   baseurl     : String,
+  filter      : String,
+  assets      : String,
+  files       : String,
   version     : Boolean,
   help        : Boolean
 };
