@@ -22,7 +22,7 @@ function Generator(o) {
   this.argv = o.argv;
 
   // defaults
-  o.layout = o.layout || o.template || path.join(__dirname, 'templates/default/index.html');
+  o.layout = o.layout || o.template;
   o.baseurl = o.baseurl || '';
   o.dest = o.dest || o.destination || '_site';
   o.cwd = o.cwd || process.cwd();
@@ -33,6 +33,11 @@ function Generator(o) {
   o.assets = o.assets || ['**/*.css', '**/*.js', '**/*.png', '**/*.gif']
   // files to generate
   o.files = o.files || '**/*.md';
+
+  if(!o.layout) {
+    o.templateDir = path.join(__dirname, 'templates/default');
+    o.layout = path.join(o.templateDir, 'index.html');
+  }
 
   var cwd = this.cwd = path.resolve(o.cwd, o.source);
   this.dest = path.resolve(o.dest);
@@ -64,6 +69,13 @@ Generator.prototype.generate = function generate(cb) {
 
   // find the asssets to copy
   var assets = this.find(this.options.assets);
+
+  // if a template dir was given (case of default), add the assets
+  // within this dir
+  if(this.options.templateDir) assets = assets.concat(this.find('**/*.css', {
+    cwd: this.options.templateDir,
+    matchBase: true
+  }));
 
   // compute the content of each page from markdown, without layout
   // (but don't write to disk yet)
@@ -99,28 +111,34 @@ Generator.prototype.copy = function copy(files, cb) {
     self = this;
 
   files.forEach(function(file) {
-    var to = path.join(self.dest, file);
+    var filepath = file.replace(self.options.templateDir, '').replace(/^(\/)|(\\)/g, '');
+    var to = path.join(self.dest, filepath);
     mkdirp(path.dirname(to), function(err) {
       if(err) return cb(err);
       var ws = fs.createWriteStream(to).on('close', function() {
         if(--ln) return;
         cb();
       });
-      fs.createReadStream(path.join(self.cwd, file)).pipe(ws);
+      fs.createReadStream(file).pipe(ws);
     });
   });
 
   return this;
 };
 
-Generator.prototype.find = function find(globs) {
-  var filter = /^_/;
+Generator.prototype.find = function find(globs, o) {
+  var filter = /^_/, self = this;
   globs = Array.isArray(globs) ? globs : globs.split(' ');
   return globs.map(function(pattern) {
     // todo consider dealing with _sidebar / _footer
-    return glob.sync(pattern, { matchBase: true, cwd: this.cwd }).filter(function(file) {
+    var res = glob.sync(pattern, o || { matchBase: true, cwd: self.cwd });
+    res = res.filter(function(file) {
       return !filter.test(file) && !filter.test(path.basename(file));
+    }).map(function(file) {
+      return path.join(o && o.cwd ? o.cwd : self.cwd, file);
     });
+
+    return res;
   }).reduce(function(a, b) {
     // should unique this
     return a.concat(b);
@@ -157,7 +175,7 @@ function Page(filepath, o) {
   this.ext = path.extname(filepath);
   this.basename = path.basename(filepath);
   this.dirname = path.dirname(filepath);
-  this.body = fs.readFileSync(path.resolve(this.cwd, filepath), 'utf8');
+  this.body = fs.readFileSync(filepath, 'utf8');
   this.content = '';
 
   this.tokens = marked.lexer(this.body);
