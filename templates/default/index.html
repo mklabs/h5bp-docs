@@ -1,0 +1,90 @@
+<!doctype html public "✰">
+<!--[if lt IE 7]> <html lang="en" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>    <html lang="en" class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>    <html lang="en" class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html lang="en" class="no-js"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>h5bp/node-build-script .::. {{ title }}</title>
+  <meta name="viewport" content="width=device-width">
+  <link rel="stylesheet" href="css/{{ site.options.style }}.css" >
+  <style>
+    .themes { position: fixed; right: 2em; top: 1em; }
+    .themes a { font-size: 0.8em; float: left; margin-left: 0.5em; }
+    .themes a[href="#dark"] { color: #444; }
+    .themes a[href="#white"] { color: #fff; }
+    .themes a[href="#grey"] { color: #aaa; }
+  </style>
+  <script>
+    (function($, exports) {
+      $ = $ || function(sel) { return Array.prototype.slice.call(document.querySelectorAll(sel));};
+      var m = (location.hash.match(/^#([\w]+)/) || [])[1],
+        link = $('link')[0];
+      if(m && !!~['dark', 'white', 'grey'].indexOf(m)) {
+        link.href = link.href.replace(/[^\/]+.css$/, m + '.css');
+      }
+      this.$ = $;
+    })(this.jQuery || this.Zepto, this);
+  </script>
+</head>
+<body>
+
+  <p class="themes">
+    <a href="#dark">dark</a>
+    <a href="#white">white</a>
+    <a href="#grey">grey</a>
+  </p>
+
+  <aside id="sidebar" class="interface">
+
+    <a class="toc_title" href="#getting-started">All</a>
+    <ul class="toc_section">
+    {{#site.pages}}
+      <li><a href="#{{ slug }}">{{ title }}</a></li>
+    {{/site.pages}}
+    </ul>
+  </aside>
+
+  <div class="container">
+
+    <section id=documentation>
+
+      {{#site.pages}}
+        <h2 id="{{ slug }}">{{ title }}</h2>
+        {{{ content }}}
+      {{/site.pages}}
+
+      <hr>
+      <p>
+        This documentation is based on the layout of the
+        <a href="https://github.com/documentcloud/backbone/">Backbone.js</a>
+        documentation, which is released under the
+        <a href="https://github.com/documentcloud/backbone/blob/master/LICENSE">MIT license</a>.
+      </p>
+
+    </section>
+
+  </div>
+  <script>
+    (function($) {
+      var themes = $('.themes a'),
+        each = themes.each ? 'each' : 'forEach',
+        link = $('link')[0];
+
+      themes[each](function(val, i) {
+        var swap = typeof val === 'number',
+          el = swap ? i : val,
+          theme = (el.href.match(/#([\w]+)/) || [])[1];
+
+        if(swap) i = val, val = el;
+        if(!theme) return;
+        el.addEventListener('click', function(e) {
+          link.href = link.href.replace(/[^\/]+.css$/, theme + '.css');
+        });
+      });
+    })(this.$, this);
+  </script>
+</body>
+</html>
+
