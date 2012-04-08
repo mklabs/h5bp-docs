@@ -81,7 +81,8 @@ Generator.prototype.generate = function generate(cb) {
   // render each pages with layout and write to disk
   pages.forEach(function(page) {
     // sync, todo: -> async
-    page.render({ layout: self.layout }).write();
+    var html = page.html({ layout: self.layout });
+    page.write(html);
   });
 
   this.copy(assets, cb);
@@ -180,19 +181,25 @@ Page.prototype.render = function render(locals) {
   locals = locals || {};
   locals.page = this;
 
-  var links = this.links.map(this.dest.bind(this)).map(function(absolute) {
-    return absolute.replace(path.join(cwd, output), '').replace(/^\//, '');
-  });
-
-  this.content = marked.toHtml(this.tokens, this.baseurl, links);
-  if(locals.layout) this.content = locals.layout.render(this.toJSON(), locals);
+  this.content = this.html(locals);
   return this;
 };
 
-Page.prototype.write = function write() {
+Page.prototype.html = function html(locals) {
+  var self = this;
+  var links = this.links.map(this.dest.bind(this)).map(function(absolute) {
+    return absolute.replace(path.join(self.cwd, self.output), '').replace(/^\//, '');
+  });
+
+  var content = marked.toHtml(this.tokens, this.baseurl, links);
+  if(locals.layout) content = locals.layout.render(this.toJSON(), locals, this.dest());
+  return content;
+};
+
+Page.prototype.write = function write(content) {
   var filepath = this.dest();
   mkdirp.sync(path.dirname(filepath));
-  fs.writeFileSync(filepath, this.content);
+  fs.writeFileSync(filepath, content || this.content);
   return this;
 };
 
@@ -250,10 +257,8 @@ function Layout(filepath, cwd) {
   this.name = this.basename.replace(this.ext, '');
 }
 
-Layout.prototype.render = function render(data, locals) {
-  var body = this.template.render(data, locals);
-
-  var dest = path.dirname(locals.page.dest());
+Layout.prototype.render = function render(data, locals, dest) {
+  var body = this.template.render(data);
 
   // handle relative assets
   body = body.replace(/<link rel=["']?stylesheet["']?\shref=['"](.+)["']\s*>/gm, function(match, src) {
