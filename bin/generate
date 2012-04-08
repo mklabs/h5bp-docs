@@ -17,6 +17,10 @@ var known = {
   baseurl     : String,
   filter      : String,
   assets      : String,
+  template    : String,
+  serve       : Boolean,
+  preview     : Boolean,
+  style       : String,
   files       : String,
   version     : Boolean,
   help        : Boolean
@@ -46,6 +50,11 @@ site.on('error', function(er) {
 var now = +new Date;
 site.on('end', function() {
   console.log(' ✔ Site generated in ', ((+new Date - now) / 1000) + 's');
+});
+
+
+site.once('end', function() {
+  if(opts.serve || opts.preview) site.preview();
 });
 
 // generate

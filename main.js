@@ -4,10 +4,13 @@ var fs = require('fs'),
   util = require('util'),
   glob = require('glob'),
   nopt = require('nopt'),
+  http = require('http'),
+  mime = require('mime'),
   events = require('events'),
   marked = require('./markdown'),
   mkdirp = require('mkdirp'),
   rimraf = require('rimraf'),
+  parse = require('url').parse,
   hogan = require('hogan');
 
 module.exports = Generator;
@@ -22,7 +25,7 @@ function Generator(o) {
   this.argv = o.argv;
 
   // defaults
-  o.layout = o.layout || o.template;
+  o.layout = o.layout;
   o.baseurl = o.baseurl || '';
   o.dest = o.dest || o.destination || '_site';
   o.cwd = o.cwd || process.cwd();
@@ -35,13 +38,18 @@ function Generator(o) {
   o.files = o.files || '**/*.md';
 
   if(!o.layout) {
-    o.templateDir = path.join(__dirname, 'templates/default');
-    o.layout = path.join(o.templateDir, 'index.html');
+    o.template = o.template || path.join(__dirname, 'templates/default');
+    o.layout = path.join(o.template, 'index.html');
+    o.style = o.style || 'white';
   }
 
   var cwd = this.cwd = path.resolve(o.cwd, o.source);
   this.dest = path.resolve(o.dest);
 
+  // find the assets to copy
+  this.findAssets();
+
+  // find the markdown files to compute / generate / render to disk
   var files = this.files = this.find(o.files);
   this.pages = this.files.map(function(filepath) {
     return new Page(filepath, {
@@ -67,16 +75,6 @@ Generator.prototype.generate = function generate(cb) {
   // clean the previous build dirs
   this.clean();
 
-  // find the asssets to copy
-  var assets = this.find(this.options.assets);
-
-  // if a template dir was given (case of default), add the assets
-  // within this dir
-  if(this.options.templateDir) assets = assets.concat(this.find('**/*.css', {
-    cwd: this.options.templateDir,
-    matchBase: true
-  }));
-
   // compute the content of each page from markdown, without layout
   // (but don't write to disk yet)
   this.pages.forEach(function(page) {
@@ -97,7 +95,7 @@ Generator.prototype.generate = function generate(cb) {
     page.write(html);
   });
 
-  this.copy(assets, cb);
+  this.copy(this.assets, cb);
 };
 
 Generator.prototype.clean = function clean(cb) {
@@ -105,21 +103,38 @@ Generator.prototype.clean = function clean(cb) {
   return this;
 };
 
+Generator.prototype.findAssets = function findAssets() {
+  var opts = this.options;
+  // find the asssets to copy
+  this.assets = this.find(this.options.assets);
+
+  // if a template dir was given (case of default), add the assets
+  // within this dir
+  if(this.options.template) this.assets = this.assets.concat(this.find('**/*.css', {
+    cwd: this.options.template,
+    matchBase: true
+  }));
+
+  this.assets = this.assets.map(function(filepath) {
+    return new Asset(filepath, opts);
+  });
+};
+
+
 Generator.prototype.copy = function copy(files, cb) {
   files = Array.isArray(files) ? files : files.join(' ');
   var ln = files.length,
     self = this;
 
   files.forEach(function(file) {
-    var filepath = file.replace(self.options.templateDir, '').replace(/^(\/)|(\\)/g, '');
-    var to = path.join(self.dest, filepath);
-    mkdirp(path.dirname(to), function(err) {
+    var filepath = file.dest();
+    mkdirp(path.dirname(filepath), function(err) {
       if(err) return cb(err);
-      var ws = fs.createWriteStream(to).on('close', function() {
+      var ws = fs.createWriteStream(filepath).on('close', function() {
         if(--ln) return;
         cb();
       });
-      fs.createReadStream(file).pipe(ws);
+      fs.createReadStream(file.file).pipe(ws);
     });
   });
 
@@ -156,9 +171,79 @@ Generator.prototype.cb = function cb(ns, cb) {
 
 Generator.prototype.toJSON = function toJSON(cb) {
   return {
-    pages: this.pages.map(function(p) { return p.toJSON(true); }),
+    pages: this.pages.map(function(p) { return p.toJSON(true, p.html({})); }),
     options: this.options
   };
+};
+
+Generator.prototype.preview = function preview(cb) {
+  var opts = this.options, self = this;
+  // base directory
+  var base = path.join(opts.cwd, opts.dest);
+  // create and store as this.server a basic static http server
+  var server = this.server = http.createServer(function(req, res) {
+    // store timestamp for latter logging
+    var now = new Date;
+    // parse our req.url
+    var url = parse(req.url);
+    // handle index.html
+    var pathname = url.pathname.slice(-1) === '/' ? url.pathname + 'index.html' : url.pathname;
+    // cleanup leading `/` and resolve to appropriate dir
+    pathname = pathname.replace(/^\//, '');
+    pathname = path.resolve(base, pathname);
+
+    var page = self.pages.filter(function(p) {
+      return p.dest() === pathname;
+    })[0];
+
+    if(!page) page = self.assets.filter(function(asset) {
+      return asset.dest(opts.cwd) === pathname;
+    })[0];
+
+    var status = res.statusCode;
+    fs.stat(pathname, function(e) {
+      if(e) {
+        status = 404;
+        pathname = path.join(__dirname, 'templates/404.html');
+      }
+
+      color = status >= 500 ? 31 :
+        status >= 400 ? 33 :
+        status >= 300 ? 36 :
+        32;
+
+      if(!page) return send();
+
+      if(page) page.stat(function(e, stat) {
+        var html;
+        if(e) console.error(e);
+        page.prev = page.prev || (page.prev = stat);
+        if(+stat.mtime === +page.prev.mtime) send()
+        else {
+          html = page.html && page.html({ layout: self.layout });
+          if(page.write) { page.write(html); send(); }
+          else self.copy(self.assets, send);
+        }
+        page.prev = stat;
+      });
+
+      function send() {
+        res.setHeader('Content-Type', mime.lookup(pathname));
+        fs.createReadStream(pathname).on('close', function() {
+          console.log('\033[90m' + req.method
+            + ' ' + url.pathname + ' '
+            + '\033[' + color + 'm' + status
+            + ' \033[90m'
+            + (new Date - now)
+            + 'ms\033[0m');
+        }).pipe(res);
+      }
+    });
+  });
+
+  var port = this.options.port || process.env.PORT || 3000;
+  server.listen(port);
+  console.log('Server started on %d in %s', port, opts.cwd);
 };
 
 
@@ -175,10 +260,9 @@ function Page(filepath, o) {
   this.ext = path.extname(filepath);
   this.basename = path.basename(filepath);
   this.dirname = path.dirname(filepath);
-  this.body = fs.readFileSync(filepath, 'utf8');
-  this.content = '';
+  this.body = this.content = '';
 
-  this.tokens = marked.lexer(this.body);
+  this.tokens = [];
 
   this.name = this.basename.replace(this.ext, '');
   this.title = this.heading();
@@ -209,8 +293,12 @@ Page.prototype.html = function html(locals) {
     return absolute.replace(path.join(self.cwd, self.output), '').replace(/^\//, '');
   });
 
+  this.body = fs.readFileSync(this.file, 'utf8');
+  this.tokens = marked.lexer(this.body);
+
   var content = marked.toHtml(this.tokens, this.baseurl, links);
-  if(locals.layout) content = locals.layout.render(this.toJSON(), locals, this.dest());
+  locals.page = this;
+  if(locals.layout) content = locals.layout.render(this.toJSON(false, content), locals);
   return content;
 };
 
@@ -236,7 +324,12 @@ Page.prototype.href = function href(from, to) {
   return path.join(fromHome ? '.' : '..', toHome ? '/' : this.name + '/').replace(/\\/g, '/');
 };
 
-Page.prototype.toJSON = function toJSON(prevent) {
+Page.prototype.stat = function stat(cb) {
+  fs.stat(this.file, cb);
+  return this;
+};
+
+Page.prototype.toJSON = function toJSON(prevent, content) {
   var self = this;
   var links = this.links.map(function(l) {
     var page = self.site.pages.filter(function(p) {
@@ -252,11 +345,34 @@ Page.prototype.toJSON = function toJSON(prevent) {
   return {
     title: this.title,
     slug: this.title.replace(/[^\w\d]+/g, '-'),
-    content: this.content,
+    content: content,
     files: links,
     baseurl: this.baseurl,
     site: prevent ? {} : this.site.toJSON()
   };
+};
+
+// Asset
+
+function Asset(filepath, o) {
+  this.file = filepath;
+
+  this.ext = path.extname(filepath);
+  this.basename = path.basename(filepath);
+  this.dirname = path.dirname(filepath);
+  this.body = fs.readFileSync(path.resolve(filepath), 'utf8');
+  this.template = o.template || '';
+  this.output = o.dest || path.join(process.cwd(), '_site');
+}
+
+Asset.prototype.dest = function dest(base) {
+  var file = this.file.replace(this.template, '').replace(/^(\/)|(\\)/g, '');
+  return path.join(base, this.output, file);
+};
+
+Asset.prototype.stat = function stat(cb) {
+  fs.stat(this.file, cb);
+  return this;
 };
 
 
@@ -275,8 +391,10 @@ function Layout(filepath, cwd) {
   this.name = this.basename.replace(this.ext, '');
 }
 
-Layout.prototype.render = function render(data, locals, dest) {
+Layout.prototype.render = function render(data, locals) {
   var body = this.template.render(data);
+
+  var dest = locals.page.dest();
 
   // handle relative assets
   body = body.replace(/<link rel=["']?stylesheet["']?\shref=['"](.+)["']\s*>/gm, function(match, src) {
