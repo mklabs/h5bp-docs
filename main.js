@@ -120,14 +120,13 @@ Generator.prototype.findAssets = function findAssets() {
   });
 };
 
-
 Generator.prototype.copy = function copy(files, cb) {
   files = Array.isArray(files) ? files : files.join(' ');
   var ln = files.length,
     self = this;
 
   files.forEach(function(file) {
-    var filepath = file.dest();
+    var filepath = file.dest(self.cwd);
     mkdirp(path.dirname(filepath), function(err) {
       if(err) return cb(err);
       var ws = fs.createWriteStream(filepath).on('close', function() {
