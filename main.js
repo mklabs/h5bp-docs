@@ -23,6 +23,7 @@ function Generator(o) {
   var site = this;
   this.options = o;
   this.argv = o.argv;
+  this.data = o.data || {};
 
   // defaults
   o.layout = o.layout;
@@ -172,10 +173,10 @@ Generator.prototype.cb = function cb(ns, cb) {
 };
 
 Generator.prototype.toJSON = function toJSON(cb) {
-  return {
-    pages: this.pages.map(function(p) { return p.toJSON(true, p.html({})); }),
-    options: this.options
-  };
+  var data = this.data || {};
+  data.pages = this.pages.map(function(p) { return p.toJSON(true, p.html({})); }),
+  data.options = this.options
+  return data;
 };
 
 Generator.prototype.preview = function preview(cb) {
