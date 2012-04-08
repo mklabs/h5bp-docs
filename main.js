@@ -217,16 +217,22 @@ Generator.prototype.preview = function preview(cb) {
       if(!page) return send();
 
       if(page) page.stat(function(e, stat) {
-        var html;
         if(e) console.error(e);
         page.prev = page.prev || (page.prev = stat);
-        if(+stat.mtime === +page.prev.mtime) send()
-        else {
-          html = page.html && page.html({ layout: self.layout });
-          if(page.write) { page.write(html); send(); }
-          else self.copy(self.assets, send);
-        }
+
+        var changed = +stat.mtime !== +page.prev.mtime;
+        if(!changed) return send();
+
+        // update the prev stat object
         page.prev = stat;
+
+        // copy, dealing with page / assets type
+        var html = page.html && page.html({ layout: self.layout });
+        if(!page.write) self.copy(self.asset, send);
+        else {
+          page.write(html);
+          send();
+        }
       });
 
       function send() {
