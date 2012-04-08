@@ -352,7 +352,7 @@ Page.prototype.toJSON = function toJSON(prevent, content) {
 
   return {
     title: this.title,
-    slug: this.title.replace(/[^\w\d]+/g, '-'),
+    slug: this.title.toLowerCase().replace(/[^\w\d]+/g, '-'),
     content: content,
     files: links,
     baseurl: this.baseurl,
