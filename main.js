@@ -61,7 +61,10 @@ function Generator(o) {
     });
   });
 
-  this.layout = new Layout(o.layout, cwd);
+  this.layout = new Layout(o.layout, {
+    site: this,
+    cwd: cwd
+  });
   events.EventEmitter.call(this);
 }
 
@@ -377,9 +380,11 @@ Asset.prototype.stat = function stat(cb) {
 
 // Layout
 
-function Layout(filepath, cwd) {
+function Layout(filepath, o) {
   this.file = filepath;
-  this.cwd = cwd || process.cwd();
+  this.cwd = o.cwd || process.cwd();
+
+  this.site = o.site;
 
   this.ext = path.extname(filepath);
   this.basename = path.basename(filepath);
@@ -392,8 +397,9 @@ function Layout(filepath, cwd) {
 
 Layout.prototype.render = function render(data, locals) {
   var body = this.template.render(data);
-
   var dest = locals.page.dest();
+
+  if(this.site.options.relative === false) return body;
 
   // handle relative assets
   body = body.replace(/<link rel=["']?stylesheet["']?\shref=['"](.+)["']\s*>/gm, function(match, src) {
