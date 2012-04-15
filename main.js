@@ -84,6 +84,9 @@ Generator.prototype.generate = function generate(cb) {
   this.pages.forEach(function(page) {
     // sync, todo: -> async
     page.render();
+
+    self.emit('page', page);
+    self.emit(page, page);
   });
 
   // filter to a subset of pages, if --filter was provided
@@ -125,6 +128,7 @@ Generator.prototype.findAssets = function findAssets() {
 };
 
 Generator.prototype.copy = function copy(files, cb) {
+  files = files  || [];
   files = Array.isArray(files) ? files : files.join(' ');
   var ln = files.length,
     self = this;
@@ -271,8 +275,6 @@ function Page(filepath, o) {
   this.dirname = path.dirname(filepath);
   this.body = this.content = '';
 
-  this.tokens = [];
-
   this.name = this.basename.replace(this.ext, '');
   this.title = this.heading();
 
@@ -302,8 +304,8 @@ Page.prototype.html = function html(locals) {
     return absolute.replace(path.join(self.cwd, self.output), '').replace(/^\//, '');
   });
 
-  this.body = fs.readFileSync(this.file, 'utf8');
-  this.tokens = marked.lexer(this.body);
+  this.body = this.body || fs.readFileSync(this.file, 'utf8');
+  this.tokens = this.tokens || marked.lexer(this.body);
 
   var content = marked.toHtml(this.tokens, this.baseurl, links);
   locals.page = this;

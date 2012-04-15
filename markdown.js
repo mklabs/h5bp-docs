@@ -35,7 +35,7 @@ marked.anchors = function anchors(tokens, baseurl, links) {
 marked.highlight = function hl(tokens) {
   var ln = tokens.length;
   tokens.forEach(function(t) {
-    if(t.type === 'code') {
+    if(t.type === 'code' && !t.escaped) {
       t.text = highlight(t.text).value;
       t.escaped = true;
     }
