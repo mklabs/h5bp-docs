@@ -13,7 +13,7 @@ var opts = config();
 var known = {
   src         : String,
   dest        : String,
-  template    : String,
+  layout      : String,
   baseurl     : String,
   filter      : String,
   assets      : String,
@@ -32,7 +32,8 @@ var shorthands = {
   b: ['--baseurl'],
   d: ['--destination'],
   s: ['--source'],
-  src: ['--source']
+  src: ['--source'],
+  template: ['--layout']
 };
 
 opts = extend(opts, nopt(known, shorthands));
