@@ -12,6 +12,9 @@ exports = module.exports = {
   // a single layout files with a {{ content }} placeholder.
   layout: "./index.html",
 
+  // How to replace the {{{ edit }}} placeholder. Must contain ":filename" somewhere.
+  edit: '<a class="edit-page" href="http://github.com/h5bp/html5-boilerplate/wiki/:filename/_edit">Edit this page</a>',
+
   // allowed extensions, all other files are ignored 
   ext: ['md', 'markdown', 'mkd'],
 
