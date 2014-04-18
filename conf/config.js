@@ -12,11 +12,16 @@ exports = module.exports = {
   // a single layout files with a {{ content }} placeholder.
   layout: "./index.html",
 
-  // How to replace the {{{ edit }}} placeholder. Must contain ":filename" somewhere.
-  edit: '<a class="edit-page" href="http://github.com/h5bp/html5-boilerplate/wiki/:filename/_edit">Edit this page</a>',
+  // Use a custom layout for MyCustom and TOC.
+  // Don't include the extension when specifying the file names.
+  customLayout: {'MyCustom': './custom.html',
+                 'TOC':  './toc.html'},
 
   // allowed extensions, all other files are ignored 
   ext: ['md', 'markdown', 'mkd'],
+
+  // How to replace the {{{ edit }}} placeholder. Must contain ":filename" somewhere.
+  edit: '<a class="edit-page" href="http://github.com/h5bp/html5-boilerplate/wiki/:filename/_edit">Edit this page</a>',
 
   // baseurl, only used with --server flag. ex: docs
   // also it helps to prefix links with some path
