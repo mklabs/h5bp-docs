@@ -68,6 +68,9 @@ The following is a list of the currently supported configuration options. These 
   // allowed extensions, all other files are ignored 
   ext: ['md', 'markdown', 'mkd'],
   
+  // Exclude some paths/directories. This is a list of JS regular expressions.
+  exclude: [/hidden\.dir/, /.*\.hide\.md/],
+  
   // How to replace the {{{ edit }}} placeholder. Must contain ":filename" somewhere.
   edit: '<a class="edit-page" href="http://github.com/h5bp/html5-boilerplate/wiki/:filename/_edit">Edit this page</a>',
   
