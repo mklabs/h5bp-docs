@@ -26,7 +26,7 @@ options = optimist.argv.config ?
   defaults;
 
 // get command line options, merge with defaults
-argv = optimist.default(options).argv;
+argv = optimist.default(defaults).default(options).argv;
 
 
 // basic help output when -h or --help used
